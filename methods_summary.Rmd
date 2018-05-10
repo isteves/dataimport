@@ -32,10 +32,10 @@ You can download a package to a directory on your computer using this code:
 result <- dataone::query(dataone::CNode(), 
                          list(q='id:"doi:10.18739/A2MQ00"'), 
                          as="data.frame")
-packagePid <- result$resourceMap[1]
+rm_pid <- result$resourceMap[1]
 mn <- dataone::getMNode(cn, result$datasource[1])
   
-package_path <- dataone::getPackage(mn, packagePid)
+package_path <- dataone::getPackage(mn, rm_pid)
 unzip(package_path, exdir = ".") #exdir = directory to extract package to
 ```
 
@@ -77,3 +77,7 @@ mn <- guess_member_node("https://search.dataone.org/#view/https://pasta.lternet.
 # We can now use any of the above functions:
 get_eml_attributes_url(mn, "https://search.dataone.org/#view/https://pasta.lternet.edu/package/metadata/eml/knb-lter-ntl/276/13")
 ```
+
+# Getting attributes for a specific data object
+
+
