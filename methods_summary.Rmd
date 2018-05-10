@@ -1,0 +1,79 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+# Package relationships
+
+To get the PIDs for the metadata, data, and resource map objects in a data package, you can run:
+
+```{r}
+pid <- "doi:10.6073/pasta/c89e6f25b1ac3b0bf8f13ea538fc490c"
+cn <- dataone::CNode()
+pkg <- arcticdatautils::get_package(cn, pid)
+
+print(pkg)
+```
+
+This will also work for a specific data object, but it gives a warning message.
+
+```{r}
+pid <- "https://pasta.lternet.edu/package/data/eml/knb-lter-cap/651/1/c36ce118a59ed1508f963ea3ab5453b2"
+pkg <- arcticdatautils::get_package(cn, pid)
+
+print(pkg)
+```
+
+# Download a package
+
+You can download a package to a directory on your computer using this code:
+
+```{r}
+# Use a query to identify the member node and resource map PID
+result <- dataone::query(dataone::CNode(), 
+                         list(q='id:"doi:10.18739/A2MQ00"'), 
+                         as="data.frame")
+packagePid <- result$resourceMap[1]
+mn <- dataone::getMNode(cn, result$datasource[1])
+  
+package_path <- dataone::getPackage(mn, packagePid)
+unzip(package_path, exdir = ".") #exdir = directory to extract package to
+```
+
+The downloaded package will be stored in a folder named after the resource map, which contains a "data" folder with the metadata, resource map, and data objects.
+
+# Read EML
+
+Generally, you can read EML into R in the following way:
+
+```{r}
+eml <- EML::read_eml(rawToChar(dataone::getObject(cn, pkg$metadata)))
+```
+
+In some cases, this is needed:
+
+```{r}
+obj <- dataone::getObject(cn, pkg$metadata)
+char <- rawToChar(obj)
+eml1 <- EML::read_eml(stringr::str_replace(char, "\n$", ""))
+```
+
+# [Dom's method](https://github.com/NCEAS/datamgmt/blob/master/vignettes/download_ADC_packages.Rmd):
+
+Switching between DataOne/LTER Member Nodes 
+Suppose we want to download this package from LTER: https://search.dataone.org/#view/https://pasta.lternet.edu/package/metadata/eml/knb-lter-ntl/276/13
+
+We first need to tell R that we're changing member nodes. The fastest way of doing this is to reset your mn with the guess_member_node function. Note: This function accepts metadata and resource map pids, or DataOne package URLs as inputs
+
+```{r}
+# The following three calls return the same member node (mn)
+# Metadata pid input: 
+mn <- guess_member_node("https://pasta.lternet.edu/package/metadata/eml/knb-lter-ntl/276/13")
+# Resource map pid input: 
+mn <- guess_member_node("doi:10.6073/pasta/97c6d83a5f6a0a065ef3209fcb491b6e")
+# Package URL input: 
+mn <- guess_member_node("https://search.dataone.org/#view/https://pasta.lternet.edu/package/metadata/eml/knb-lter-ntl/276/13")
+
+
+# We can now use any of the above functions:
+get_eml_attributes_url(mn, "https://search.dataone.org/#view/https://pasta.lternet.edu/package/metadata/eml/knb-lter-ntl/276/13")
+```
