@@ -2,6 +2,33 @@
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
+# Download a data object
+
+```{r}
+cn <- dataone::CNode()
+data_info <- dataone::resolve(cn, "urn:uuid:45dd7166-f4d3-4d32-abb9-f402af6fb237")
+print(data_info)
+
+data <- read.csv(data_info$data$url, header = FALSE)
+print(head(data))
+```
+
+# Read EML
+
+Generally, you can read EML into R in the following way:
+
+```{r}
+eml <- EML::read_eml(rawToChar(dataone::getObject(cn, pkg$metadata)))
+```
+
+In some cases, this is needed:
+
+```{r}
+obj <- dataone::getObject(cn, pkg$metadata)
+char <- rawToChar(obj)
+eml1 <- EML::read_eml(stringr::str_replace(char, "\n$", ""))
+```
+
 # Package relationships
 
 To get the PIDs for the metadata, data, and resource map objects in a data package, you can run:
@@ -41,23 +68,9 @@ unzip(package_path, exdir = ".") #exdir = directory to extract package to
 
 The downloaded package will be stored in a folder named after the resource map, which contains a "data" folder with the metadata, resource map, and data objects.
 
-# Read EML
+## Dom's method
 
-Generally, you can read EML into R in the following way:
-
-```{r}
-eml <- EML::read_eml(rawToChar(dataone::getObject(cn, pkg$metadata)))
-```
-
-In some cases, this is needed:
-
-```{r}
-obj <- dataone::getObject(cn, pkg$metadata)
-char <- rawToChar(obj)
-eml1 <- EML::read_eml(stringr::str_replace(char, "\n$", ""))
-```
-
-# [Dom's method](https://github.com/NCEAS/datamgmt/blob/master/vignettes/download_ADC_packages.Rmd):
+See [this vignette](https://github.com/NCEAS/datamgmt/blob/master/vignettes/download_ADC_packages.Rmd) for more details:
 
 Switching between DataOne/LTER Member Nodes 
 Suppose we want to download this package from LTER: https://search.dataone.org/#view/https://pasta.lternet.edu/package/metadata/eml/knb-lter-ntl/276/13
@@ -77,6 +90,8 @@ mn <- guess_member_node("https://search.dataone.org/#view/https://pasta.lternet.
 # We can now use any of the above functions:
 get_eml_attributes_url(mn, "https://search.dataone.org/#view/https://pasta.lternet.edu/package/metadata/eml/knb-lter-ntl/276/13")
 ```
+
+
 
 # Getting attributes for a specific data object
 
