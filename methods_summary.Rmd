@@ -94,5 +94,42 @@ get_eml_attributes_url(mn, "https://search.dataone.org/#view/https://pasta.ltern
 
 
 # Getting attributes for a specific data object
+(work in progress)
 
+```{r}
+#attributes for a specific data object ==================
+library(tidyverse)
+data_pid <- "urn:uuid:84276deb-95c1-4f99-a1ae-e795cd6fbee3"
+data_pid <- "https://pasta.lternet.edu/package/data/eml/knb-lter-arc/20036/8/58ea279a915035de63dd49efe5199b91"
+data_pid <- "https://pasta.lternet.edu/package/data/eml/knb-lter-arc/20036/8/3d01ac18a00f43002baab41784029ca7" #no attr
+
+result <- dataone::query(dataone::CNode(), 
+                         list(q = paste0('id:"', data_pid, '"')), 
+                         as="data.frame")
+
+rm_pid <- result$resourceMap[1] %>% stringr::str_replace(".* ", "")
+meta_pid <- result$isDocumentedBy[1] %>% stringr::str_replace(".* ", "")
+mn <- dataone::getMNode(dataone::CNode(), result$datasource[1])
+
+eml <- EML::read_eml(rawToChar(dataone::getObject(mn, meta_pid)))
+
+dT_url <- stringr::str_detect(EML::eml_get(eml@dataset@dataTable, "url"), data_pid)
+oE_url <- stringr::str_detect(EML::eml_get(eml@dataset@otherEntity, "url"), data_pid)
+
+if(sum(dT_url) == 1) {
+    data_info <- eml@dataset@dataTable[which(dT_url)]
+} else if(sum(oE_url) == 1) {
+    data_info <- eml@dataset@otherEntity[which(oE_url)]
+} else {
+    stop("The data could not be found")
+}
+
+if(length(data_info[[1]]@attributeList@.Data) == 0) {
+    stop("This data does not have any attributes")
+} else {
+    attr <- EML::get_attributes(data_info[[1]]@attributeList)
+}
+
+raw <- dataone::getObject(mn, data_pid)
+```
 
