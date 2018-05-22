@@ -15,7 +15,7 @@
 
 get_object <- function(data_pid, as = "parsed"){
     cn <- dataone::CNode()
-    sysmeta <- getSystemMetadata(cn, data_pid)
+    sysmeta <- dataone::getSystemMetadata(cn, data_pid)
     #marginally faster than using getSystemMetadata
     # rbenchmark::benchmark("resolve" = {resolve(dataone::CNode(), data_pid)$data$nodeIdentifier},
     #                       "sysmeta" = {getSystemMetadata(dataone::CNode(), data_pid)@originMemberNode},

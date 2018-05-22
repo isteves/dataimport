@@ -10,4 +10,8 @@ data <- get_object(pids$data)
 
 # do some wrangling/unit conversions
 
-meta <- tidy_eml(get_object("doi:10.18739/A2PC2T79B"))
+# get tabular metadata
+eml <- get_object("doi:10.18739/A2PC2T79B")
+eml_path <- "test.eml"
+EML::write_eml(eml, eml_path)
+meta <- tidy_eml(eml_path)
