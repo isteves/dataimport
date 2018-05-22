@@ -1,6 +1,6 @@
 #' Get tidy (tabular) metadata
 #'
-#' This function takes a path to an EML (.xml) metadata file and returns a data frame. 
+#' This function takes a path to an EML (.xml) metadata file and returns a data frame.
 #'
 #' @param eml An EML class object or the path to an EML (.xml) metadata file
 #' @param full (logical) Returns the most commonly used metadata fields by default. 
@@ -11,6 +11,7 @@
 #' @importFrom xml2 read_xml as_list
 #' @importFrom tibble enframe
 #' @import dplyr
+#' @importFrom EML write_eml
 #'
 #' @examples
 #' \dontrun{

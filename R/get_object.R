@@ -6,6 +6,8 @@
 #' @param as desired type of output: raw, text or parsed. content attempts to automatically figure out which one is most appropriate, based on the content-type. (based on \code{httr::content()})
 #'
 #' @export
+#' 
+#' @importFrom EML read_eml
 #'
 #' @examples
 #' \dontrun{
