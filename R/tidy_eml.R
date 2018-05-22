@@ -12,6 +12,7 @@
 #' \dontrun{
 #'    eml_path <- system.file("example-eml.xml", package = "arcticdatautils")
 #'    tidy_eml(eml_path)
+#'    tidy_eml(eml_path, full = TRUE)
 #' }
 #'
 
