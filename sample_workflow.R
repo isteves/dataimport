@@ -5,12 +5,10 @@ library(tidyverse)
 #get pid from URL
 data_url <- "https://cn.dataone.org/cn/v2/resolve/urn:uuid:a81f49db-5841-4095-aee2-b0cad7a35cc0"
 # try other urls...
-
-data <- read.csv(data_url)
 pids <- url_to_pid(data_url)
 
-#alternative to above:
-#data <- get_object(pids$data)
+data <- read.csv(data_url)
+data <- get_object(pids$data) #alternative
 
 # do some wrangling/unit conversions
 # provide functionality for single-header
