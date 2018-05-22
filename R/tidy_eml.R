@@ -1,4 +1,4 @@
-#' Get tidy metadata
+#' Get tidy (tabular) metadata
 #'
 #' This function takes a path to an EML (.xml) metadata file and returns a data frame. 
 #'
@@ -7,6 +7,11 @@
 #' If \code{full = TRUE} is specified, the full set of metadata fields are returned.
 #'
 #' @export
+#'
+#' @importFrom xml2 read_xml as_list
+#' @importFrom tibble enframe
+#' @importFrom magrittr `%>%`
+#' @import dplyr
 #'
 #' @examples
 #' \dontrun{
