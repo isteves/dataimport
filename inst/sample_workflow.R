@@ -20,3 +20,16 @@ meta <- tidy_eml(eml)
 
 # join with data
 # data pid to metadata
+
+# TODO: 
+# more specific version of getDataPackage
+# use file structure to groupe package objects
+# file name - DOI_PID_filename.csv / DOI_PID.Rdata
+
+# download_data (ADC permafrost group, already done)
+# files downloaded with DOI and PID
+# how to we get back to metadata from DOI
+
+# workflows:
+# data from internet
+# data from disk
