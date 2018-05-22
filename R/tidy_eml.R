@@ -2,7 +2,7 @@
 #'
 #' This function takes a path to an EML (.xml) metadata file and returns a data frame. 
 #'
-#' @param eml_path (character) The path to an EML (.xml) metadata file
+#' @param eml (character) The path to an EML (.xml) metadata file
 #' @param full (logical) Returns the most commonly used metadata fields by default. 
 #' If \code{full = TRUE} is specified, the full set of metadata fields are returned.
 #'
@@ -15,18 +15,30 @@
 #'
 #' @examples
 #' \dontrun{
-#'    eml_path <- system.file("example-eml.xml", package = "arcticdatautils")
-#'    tidy_eml(eml_path)
-#'    tidy_eml(eml_path, full = TRUE)
+#'    eml <- system.file("example-eml.xml", package = "arcticdatautils")
+#'    tidy_eml(eml)
+#'    tidy_eml(eml, full = TRUE)
 #' }
 #'
 
-tidy_eml <- function(eml_path, full = FALSE){
+tidy_eml <- function(eml, full = FALSE){
+  
+  if(class(eml) == "eml"){
+    temp_path <- tempfile(fileext = ".xml")
+    EML::write_eml(eml, temp_path)
+    eml_path <- temp_path
+  } else {
+    stopifnot(is.character(eml))
+    eml_path <- eml
+  }
+  
     metadata <- eml_path %>% 
         xml2::read_xml() %>% 
         xml2::as_list() %>% 
         unlist() %>% 
         tibble::enframe()
+    
+    file.remove(temp_path)
     
     if(full == FALSE){
         metadata <- metadata %>% 
