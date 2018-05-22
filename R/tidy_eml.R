@@ -10,7 +10,6 @@
 #'
 #' @importFrom xml2 read_xml as_list
 #' @importFrom tibble enframe
-#' @importFrom magrittr `%>%`
 #' @import dplyr
 #'
 #' @examples
@@ -57,7 +56,7 @@ tidy_eml <- function(eml, full = FALSE){
                 #taxonomicCoverage
                 grepl("methods", name) ~ "methods",
                 grepl("objectName", name) ~ "objectName",
-                grepl("online.url", name) ~ "url",
+                grepl("online.url", name) ~ "url"
             )) %>% 
             dplyr::filter(!is.na(category)) %>% 
             dplyr::group_by(category) %>% 

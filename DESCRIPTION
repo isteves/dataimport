@@ -1,0 +1,24 @@
+Package: dataimport
+Type: Package
+Title: dataimport
+Version: 0.1.0
+Authors@R: c(
+  person("Irene", "Steves", comment = "https://github.com/isteves",
+  email = "something@something.com", role = c("aut", "cre"))
+  )
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+Depends: magrittr
+Imports:
+    dataone,
+    stringr,
+    tibble,
+    xml2,
+    EML,
+    dplyr
+License: Apache License (== 2.0)
+Encoding: UTF-8
+LazyData: true
+Suggests: testthat
+RoxygenNote: 6.0.1
