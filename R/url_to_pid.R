@@ -33,7 +33,7 @@ url_to_pid <- function(url){
         stop("The data PID could not be found. Please get the Online Distribution URL from the metadata record on the DataONE portal (https://search.dataone.org/#data) and try again.")
     }
     
-    colnames(pids) <- c("data_pid", "metadata_pid", "resource_map_pid")
+    colnames(pids) <- c("data", "metadata", "resource_map")
     
     if(nrow(pids) > 1){
         warning("Multiple data pids were matched.")
@@ -72,6 +72,4 @@ check_version <- function(pid){
     } else {
         print(paste("The pid has been obsoleted by", sysmeta@obsoletedBy))
     }
-    
-    #TODO: check metadata?
 }
