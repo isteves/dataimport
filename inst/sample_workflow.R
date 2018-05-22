@@ -1,6 +1,6 @@
 ## SAMPLE WORKFLOW
 
-library(tidyverse)
+library(dataimport)
 
 #get pid from URL
 data_url <- "https://cn.dataone.org/cn/v2/resolve/urn:uuid:a81f49db-5841-4095-aee2-b0cad7a35cc0"
