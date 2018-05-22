@@ -2,7 +2,7 @@
 #'
 #' This function takes a path to an EML (.xml) metadata file and returns a data frame. 
 #'
-#' @param eml (character) The path to an EML (.xml) metadata file
+#' @param eml An EML class object or the path to an EML (.xml) metadata file
 #' @param full (logical) Returns the most commonly used metadata fields by default. 
 #' If \code{full = TRUE} is specified, the full set of metadata fields are returned.
 #'
