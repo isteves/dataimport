@@ -8,6 +8,7 @@
 #'
 #' @export
 #'
+#' @import magrittr
 #' @importFrom xml2 read_xml as_list
 #' @importFrom tibble enframe
 #' @import dplyr
@@ -22,16 +23,16 @@
 #'
 
 tidy_eml <- function(eml, full = FALSE){
-  
-  if(class(eml) == "eml"){
-    temp_path <- tempfile(fileext = ".xml")
-    EML::write_eml(eml, temp_path)
-    eml_path <- temp_path
-  } else {
-    stopifnot(is.character(eml))
-    eml_path <- eml
-  }
-  
+    
+    if(class(eml) == "eml"){
+        temp_path <- tempfile(fileext = ".xml")
+        EML::write_eml(eml, temp_path)
+        eml_path <- temp_path
+    } else {
+        stopifnot(is.character(eml))
+        eml_path <- eml
+    }
+    
     metadata <- eml_path %>% 
         xml2::read_xml() %>% 
         xml2::as_list() %>% 
