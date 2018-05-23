@@ -2,7 +2,7 @@
 #'
 #' This function takes a path to an EML (.xml) metadata file and returns a data frame.
 #'
-#' @param eml An EML class object or the path to an EML (.xml) metadata file
+#' @param eml An EML class object, the path to an EML (.xml) metadata file, or a raw EML object
 #' @param full (logical) Returns the most commonly used metadata fields by default. 
 #' If \code{full = TRUE} is specified, the full set of metadata fields are returned.
 #'
@@ -29,7 +29,7 @@ tidy_eml <- function(eml, full = FALSE){
         EML::write_eml(eml, temp_path)
         eml_path <- temp_path
     } else {
-        stopifnot(is.character(eml))
+        stopifnot(is.character(eml) | is.raw(eml))
         eml_path <- eml
     }
     
@@ -39,7 +39,9 @@ tidy_eml <- function(eml, full = FALSE){
         unlist() %>% 
         tibble::enframe()
     
-    file.remove(temp_path)
+    if(exists("temp_path")){
+      file.remove(temp_path)
+    }
     
     if(full == FALSE){
         metadata <- metadata %>% 

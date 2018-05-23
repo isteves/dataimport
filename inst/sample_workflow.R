@@ -34,23 +34,13 @@ data_full <- bind_rows(data, data2)
 # get tabular metadata - weakspot: determining correct metadata pid
 
 # takes a bit of processing time...
-library(furrr)
-library(tictoc)
-plan(sequential)
-tic()
+library(furrr) 
+
+future::plan(multiprocess) #may fail on R 3.3
 meta_full <- tibble(meta_pid = c("doi:10.18739/A22Z9V", 
                                  "doi:10.18739/A2ZG5K")) %>% 
-    mutate(eml = future_map(meta_pid, get_object)) %>% 
-    mutate(eml_df = future_map(eml, tidy_eml))
-toc() #101.819 sec elapsed for 2 EML's
-
-plan(multiprocess)
-tic()
-meta_fullx <- tibble(meta_pid = c("doi:10.18739/A22Z9V", 
-                                 "doi:10.18739/A2ZG5K")) %>% 
-    mutate(eml = future_map(meta_pid, get_object)) %>% 
-    mutate(eml_df = future_map(eml, tidy_eml))
-toc()
+    mutate(eml = furrr::future_map(meta_pid, get_object, as = "raw")) %>% 
+    mutate(eml_df = furrr::future_map(eml, tidy_eml))
 
 # this part is quick
 metadata <- meta_full %>% 
@@ -59,10 +49,13 @@ metadata <- meta_full %>%
 
 # join with data
 # data pid to metadata
-meta_full2 <- meta_full %>% 
+metadata <- metadata %>% 
     mutate(data_pid = c("urn:uuid:facd5242-b857-4880-8a0f-454c04d57d8e",
                         "urn:uuid:20704e01-df3f-45fc-8007-625062faf556")) 
 
+data_full_meta <- data_full %>% 
+  as.tibble() %>% 
+  left_join(metadata, by = "data_pid")
 
 # TODO: 
 # more specific version of getDataPackage
