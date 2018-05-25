@@ -4,6 +4,7 @@
 #'
 #' @param data_pid (character) The data or metadata object PID
 #' @param as desired type of output: raw, text or parsed. content attempts to automatically figure out which one is most appropriate, based on the content-type. (based on \code{httr::content()})
+#' @param ... pass arguments to read.csv
 #'
 #' @export
 #' 
@@ -16,7 +17,7 @@
 #' }
 #'
 
-get_object <- function(data_pid, as = "parsed"){
+get_object <- function(data_pid, as = "parsed", ...){
     cn <- dataone::CNode()
     sysmeta <- dataone::getSystemMetadata(cn, data_pid)
     #marginally faster than using getSystemMetadata
@@ -33,7 +34,7 @@ get_object <- function(data_pid, as = "parsed"){
         #try parsing
         
         if(sysmeta@formatId == "text/csv"){
-            out <- read.csv(text = text)
+            out <- read.csv(text = text, stringsAsFactors = FALSE, ...)
         } else if(grepl("eml", sysmeta@formatId)){
             tmp <- tempfile(fileext = ".xml")
             writeBin(raw, tmp)
