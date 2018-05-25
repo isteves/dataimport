@@ -8,7 +8,7 @@
 #' @importFrom stringr str_extract
 #' @importFrom dataone query CNode
 #' @importFrom utils URLdecode read.csv
-#' @importFrom rlang %||%
+#' @importFrom purrr %||%
 #'
 #' @export
 #'

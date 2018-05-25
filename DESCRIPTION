@@ -9,9 +9,10 @@ Authors@R: c(
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-Depends: magrittr
+Depends: magrittr, R (>= 3.0.0)
 Imports:
     dataone,
+    purrr,
     stringr,
     tibble,
     xml2,
