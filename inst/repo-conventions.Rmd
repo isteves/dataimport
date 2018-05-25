@@ -1,0 +1,38 @@
+---
+title: "Repository conventions"
+output: html_document
+---
+
+PASTA - resource maps take doi's; metadata have their own pid convention
+```{r}
+id <- "https://pasta.lternet.edu/package/data/eml/knb-lter-luq/107/9996700/6c2bcaf6cdd5b365a51b1d3318f93eef")
+
+x <- dataone::query(dataone::CNode("PROD"), 
+                      list(q = paste0('identifier:"', id, '"'),
+                           fl = "identifier, isDocumentedBy, resourceMap"), as = "data.frame"))
+```
+
+          
+Resource maps do not always have associated metadata objects: of 4363 randomly queried resource maps, 1063 did not have associated metadata...but possibly this is a query issue?  might not have gotten results of metadata + rm         
+  
+```{r}
+x <- dataone::query(cn, 
+               list(q = 'resourceMap:* AND -obsoletedBy:*',
+                    fl = "*",
+                    rows = 10000),
+               as = "data.frame")
+system("say Just finished!") #for mac only
+
+x2 <- x %>% 
+    select(identifier, formatType, isDocumentedBy, datasource, documents, resourceMap)
+
+x3 <- x2 %>%  
+    group_by(resourceMap, formatType, datasource) %>% 
+    summarize(count = n()) %>% 
+    spread(formatType, count)
+
+summary(x2)
+# 1063/4363 resource maps do not have associated metadata
+```
+                           
+                           
