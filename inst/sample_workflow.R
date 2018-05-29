@@ -22,6 +22,14 @@ check_version(pids$data) #good to go!
 data <- read.csv(data_url, stringsAsFactors = FALSE, na.strings = "NAN")
 # alternative: data <- get_object(pids$data) 
 
+# another alternative (from Mitchell): get data with attribute info attached
+        # ## Run function
+        # data <- getEMLData(d1c, eml_pid, data_pid1)
+        # 
+        # ## Look at attributes
+        # attributes(data$Grid_Pt)
+        # attributes(data$Depth1)
+
 # do some wrangling/unit conversions
 # provide functionality for single-header
 # example of unit conversion with units package
@@ -93,6 +101,8 @@ metadata <- meta_full %>%
 
 data_full_meta <- data_full %>% 
     left_join(metadata, by = "metadata_pid") 
+
+####################
 
 # TODO: 
 # more specific version of getDataPackage
