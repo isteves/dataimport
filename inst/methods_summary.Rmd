@@ -133,3 +133,13 @@ if(length(data_info[[1]]@attributeList@.Data) == 0) {
 raw <- dataone::getObject(mn, data_pid)
 ```
 
+# Notes from Peter
+
+Useful dataone functions to keep in mind:
+
+```{r eval = FALSE}
+pkg <- getDataPackage()
+do <- getMember(pkg) #data object
+getData(do)
+```
+
