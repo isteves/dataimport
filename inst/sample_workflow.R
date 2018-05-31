@@ -4,6 +4,7 @@ library(tidyverse)
 library(dataimport)
 # library(tictoc) #for measuring code duration
 library(parallel)
+library(units)
 
 # example: MISP Datalogger Barrow, Alaska, 2016 ==========
 # get pids -----------
@@ -33,6 +34,10 @@ data <- read.csv(data_url, stringsAsFactors = FALSE, na.strings = "NAN")
 # do some wrangling/unit conversions
 # provide functionality for single-header
 # example of unit conversion with units package
+
+x <- set_units(10, m)
+units(x) = with(ud_units, cm)
+
 
 # add pids - is it worth wrapping this into a fxn? ---------
 data$data_pid <- pids$data
