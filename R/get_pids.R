@@ -32,7 +32,6 @@ get_pids <- function(pkg_doi, data_url = NULL){
     pkg_doi <- stringr::str_replace(pkg_doi, "https://", "")
     
     # check data_url and decode; try to grab pid
-    stopifnot(is.character(data_url))
     if(!is.null(data_url)){
         url_decoded <- URLdecode(data_url)
         data_id <- stringr::str_extract(url_decoded, "[0-9a-z:-]*$")
