@@ -32,7 +32,6 @@ get_pids <- function(pkg_doi, data_url = NULL){
     pkg_doi <- stringr::str_replace(pkg_doi, "https://", "")
     
     # check data_url and decode; try to grab pid
-    stopifnot(is.character(data_url))
     if(!is.null(data_url)){
         url_decoded <- URLdecode(data_url)
         data_id <- stringr::str_extract(url_decoded, "[0-9a-z:-]*$")
@@ -68,7 +67,7 @@ get_pids <- function(pkg_doi, data_url = NULL){
                      metadata = pids$identifier[pids$formatType == "METADATA"],
                      data = data_id %||% pids$identifier[pids$formatType == "DATA"])
     
-    if(!is.null(data_id) & !any(stringr::str_detect(pids$identifier[pids$formatType == "DATA"], data_id))){
+    if(!is.null(data_id) & !any(stringr::str_detect(pids$identifier[pids$formatType == "DATA"], pid_list$data))){
         stop(sprintf("The data object, %s, is not part of the data package, %s.", data_url, pkg_doi))
     }
     
