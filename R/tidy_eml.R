@@ -45,7 +45,7 @@ tidy_eml <- function(eml, full = FALSE){
     
     if(full == FALSE){
         metadata <- metadata %>% 
-            dplyr::mutate(category = case_when(
+            dplyr::mutate(name = case_when(
                 grepl("title", name) ~ "title",
                 grepl("individualName", name) ~ "people",
                 grepl("abstract", name) ~ "abstract",
@@ -62,8 +62,8 @@ tidy_eml <- function(eml, full = FALSE){
                 grepl("objectName", name) ~ "objectName",
                 grepl("online.url", name) ~ "url"
             )) %>% 
-            dplyr::filter(!is.na(category)) %>% 
-            dplyr::group_by(category) %>% 
+            dplyr::filter(!is.na(name)) %>% 
+            dplyr::group_by(name) %>% 
             dplyr::summarize(value = paste(value, collapse = " ")) 
     }
     

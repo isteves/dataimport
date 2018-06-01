@@ -5,12 +5,14 @@
 #' @param data (data.frame) Data frame to match with attribute metadata
 #' @param attributes (data.frame) Attribute metadata
 #'
+#' @importFrom units as_units set_units
+#'
 #' @export
 
 match_attributes <- function(data, attributes){
     #check if units can be set
     validate_unit <- function(x){
-        yy <- tryCatch(units::as_units(x),
+        yy <- tryCatch(units:::as_units(x),
                        error = function(e) {FALSE})
         if(class(yy) == "units"){yy <- TRUE}
         return(yy)
