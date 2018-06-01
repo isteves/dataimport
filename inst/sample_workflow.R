@@ -88,39 +88,14 @@ data_full <- dplyr::bind_rows(data, data2)
 # https://github.com/Science-for-Nature-and-People/2016-postdoc-training/blob/master/09-multicore-processing/1-multiprocessing-tools.md
 # https://github.com/NCEAS/oss-lessons/blob/gh-pages/parallel-computing-in-r/parallel-computing-in-r.Rmd
 
-meta_pids <- unique(data_full$metadata_pid)
+metadata <- get_metadata(data_full$metadata_pid)
 
-# getting the metadata requires an internet connection
-
-# tic()
-no_cores <- detectCores() - 1 # number of ores
-cl <- makeCluster(no_cores) # initiate cluster
-eml_obj <- parLapply(cl, meta_pids, get_object, as = "raw")
-stopCluster(cl) #close connection
-# toc() #12 s
-
-eml_tidy <- lapply(eml_obj, tidy_eml)
-
-meta_full <- tibble(metadata_pid = unique(data_full$metadata_pid),
-                    eml_df = eml_tidy)
-
-# alternative multiprocessing, but doesn't always work:
-    # library(future)
-    # library(furrr)
-    # 
-    # plan(multiprocess) #use `plan(sequential)` if you get errors
-    # meta_full <- tibble(metadata_pid = unique(data_full$metadata_pid)) %>% 
-    #     mutate(eml = future_map(metadata_pid, get_object)) %>% 
-    #     mutate(eml_df = future_map(eml, tidy_eml))
-
-# this part is quick
-metadata <- meta_full %>% 
-    tidyr::unnest(eml_df) %>% 
-    tidyr::spread(category, value, fill = NA)
+#select relevant variables
+metadata <- metadata %>% 
+    select(metadata_pid, title, temporalCoverage.beginDate, temporalCoverage.endDate, url)
 
 # join with data
 # data pid to metadata
-
 data_full_meta <- data_full %>% 
     left_join(metadata, by = "metadata_pid") 
 
