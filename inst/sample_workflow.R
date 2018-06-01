@@ -2,9 +2,10 @@
 
 library(tidyverse)
 library(dataimport)
-# library(tictoc) #for measuring code duration
 library(parallel)
 library(units)
+library(downloadData) #maier-m/download_data
+# library(tictoc) #for measuring code duration
 
 # example: MISP Datalogger Barrow, Alaska, 2016 ==========
 # get pids -----------
@@ -20,24 +21,40 @@ pids <- get_pids("doi:10.18739/A22Z9V",
 check_version(pids$data) #good to go!
 
 # read data into R ---------
-data <- read.csv(data_url, stringsAsFactors = FALSE, na.strings = "NAN")
+# data <- read.csv(data_url, stringsAsFactors = FALSE, na.strings = "NAN")
 # alternative: data <- get_object(pids$data) 
-
 # another alternative (from Mitchell): get data with attribute info attached
-        # ## Run function
-        # data <- getEMLData(d1c, eml_pid, data_pid1)
-        # 
-        # ## Look at attributes
-        # attributes(data$Grid_Pt)
-        # attributes(data$Depth1)
+d1_data <- get_D1Data(pids$data)
+data <- read.csv(text = rawToChar(d1_data$data_objects[[1]]$data), stringsAsFactors = FALSE)
+attr <- d1_data$data_objects[[1]]$attribute_metadata
 
-# do some wrangling/unit conversions
+match_attributes(data, attr) #generates script to add units
+
+data <- data %>%
+    as.tibble() %>% 
+    mutate( Batt_Volt = set_units(Batt_Volt, 'volt'),
+            PTemp_C = set_units(PTemp_C, 'celsius'),
+            TargmV = set_units(TargmV, 'millivolt'),
+            SBTempC = set_units(SBTempC, 'celsius'),
+            TargTempC = set_units(TargTempC, 'celsius'),
+            cnr4_T_C = set_units(cnr4_T_C, 'celsius'),
+            cnr4_T_K = set_units(cnr4_T_K, 'kelvin'),
+            Air_Temp = set_units(Air_Temp, 'celsius'),
+            Dist_corr = set_units(Dist_corr, 'centimeter') ) 
+
+#convert units
+data <- data %>% 
+    mutate( Batt_Volt = set_units(Batt_Volt, 'millivolt'),
+            PTemp_C = set_units(PTemp_C, 'kelvin'),
+            TargmV = set_units(TargmV, 'millivolt'),
+            SBTempC = set_units(SBTempC, 'kelvin'),
+            TargTempC = set_units(TargTempC, 'kelvin'),
+            cnr4_T_C = set_units(cnr4_T_C, 'kelvin'),
+            cnr4_T_K = set_units(cnr4_T_K, 'kelvin'),
+            Air_Temp = set_units(Air_Temp, 'kelvin'),
+            Dist_corr = set_units(Dist_corr, 'meter') )
+
 # provide functionality for single-header
-# example of unit conversion with units package
-
-x <- set_units(10, m)
-units(x) = with(ud_units, cm)
-
 
 # add pids - is it worth wrapping this into a fxn? ---------
 data$data_pid <- pids$data
