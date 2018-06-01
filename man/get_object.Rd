@@ -4,12 +4,14 @@
 \alias{get_object}
 \title{Get a DataONE object}
 \usage{
-get_object(data_pid, as = "parsed")
+get_object(data_pid, as = "parsed", ...)
 }
 \arguments{
 \item{data_pid}{(character) The data or metadata object PID}
 
 \item{as}{desired type of output: raw, text or parsed. content attempts to automatically figure out which one is most appropriate, based on the content-type. (based on \code{httr::content()})}
+
+\item{...}{pass arguments to read.csv}
 }
 \description{
 This function download a DataONE data or metadata object into the R environment

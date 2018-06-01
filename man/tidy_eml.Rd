@@ -7,7 +7,7 @@
 tidy_eml(eml, full = FALSE)
 }
 \arguments{
-\item{eml}{An EML class object or the path to an EML (.xml) metadata file}
+\item{eml}{An EML class object, the path to an EML (.xml) metadata file, or a raw EML object}
 
 \item{full}{(logical) Returns the most commonly used metadata fields by default. 
 If \code{full = TRUE} is specified, the full set of metadata fields are returned.}
