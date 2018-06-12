@@ -1,40 +1,61 @@
-get_attributes <- function(meta_pid) {
-    meta_raw <- get_object(meta_pid, as = "raw")
+library(eml2)
+library(tidyverse)
+# not run yet...
+eml_path <- system.file("dummy_eml_w_attributes.xml", package = "datamgmt")
+
+
+entity <- eml_get(eml, "dataTable")
+entity2 <- eml_get(eml, "otherEntity")
+
+
+parsed <- parse_attributes(entity)
+parsed <- parse_attributes(entity2)
+
+
+parse_attributes <- function(entity) {
+    attr_table_long <- entity$attributeList$attribute %>% 
+        enframe() %>% 
+        mutate(value = map(value, unlist),
+               value_names = map(value, names)) %>% 
+        unnest()
+    
+    if(nrow(attr_table_long) == 0){
+        stop("There is no attribute information for the entity with name ",
+             entity$entityName)
+    }
+    
+    #regular attributes
+    attrib <- attr_table_long %>% 
+        filter(!str_detect(value_names, "enumerated")) %>% 
+        spread(value_names, value, fill = NA) %>% 
+        gather(measurementScale, value, contains("measurementScale")) %>% 
+        filter(!is.na(value)) %>% 
+        mutate(measurementScale = str_replace(measurementScale, 
+                                              "measurementScale.", 
+                                              ""))
+    
+    #enumerated domains
+    enum <- attr_table_long %>% 
+        filter(str_detect(value_names, "enumerated")) %>% 
+        mutate(value_names = str_extract(value_names, "[a-zA-Z]+$"),
+               name2 = rep(1:(length(name)/2), each = 2)) %>% 
+        spread(value_names, value) %>% 
+        select(-name2)
+    
+    #add entity name/description/physical
+    phys <- entity$physical %>% 
+        unlist() %>% 
+        enframe()
+    
+    list(entityName = entity$entityName,
+         entityDescription = entity$entityDescription,
+         physical = phys,
+         attribute = attrib,
+         enumeratedDomain = enum)
     
 }
 
-library(tictoc)
-library(tidyverse)
 
-meta_pid <- "doi:10.18739/A2K86G"
-
-meta_raw <- get_object(meta_pid, as = "raw")
-x <- read_xml(meta_raw) 
-y <- xml_find_all(x, "//attributeList")
-attr <- lapply(y, function(x) {x %>% as.character() %>% EML::read_eml() %>% EML::get_attributes()})
-#slightly* faster than the alternative
-# 
-# meta_eml <- get_object(meta_pid)
-# attr2 <- EML::eml_get(meta_eml, "attributeList")
-# #29.8, 28.9
-
-dt <- EML::eml_get(meta_eml, "dataTable")
-oe <- EML::eml_get(meta_eml, "otherEntity")
-
-
-
-beepr::beep("sword")
-
-library(XML)
-xx <- xmlParse(x)
-t <- xmlToDataFrame(node = getNodeSet(xx, "//attributeList"))
-
-y <- EML::eml_get(x, "attributeList")
-y$attributes
-
-
-map(x$dataset, "surName")
-x$dataset
 
 
 #is there a better way of taking advantage of lists?
